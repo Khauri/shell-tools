@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+# Trim leading whitespace
+# Accepts both an argument and piped input
+# $1: The string to trim
+
+if [ -z "$1" ]; then
+    while IFS= read -r IN; do
+        echo "$IN" | sed -e 's/^[[:space:]]*//'
+    done
+else
+    echo "$1" | sed -e 's/^[[:space:]]*//'
+fi

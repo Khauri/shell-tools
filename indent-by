@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+# Indent the piped input
+# $1: the number of spaces to indent
+
+# There is already a built-in command called `indent` but it's some kind  of C formatting tool and not a plain text indenter
+
+while IFS= read -r IN; do
+    echo "$(printf "%${1}s")$IN"
+done

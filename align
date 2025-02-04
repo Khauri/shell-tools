@@ -1,0 +1,42 @@
+#!/usr/bin/env sh
+
+# Aligns text
+# $1: The separator. Default is ":"
+
+# Example
+# Input:
+#   key1: value1
+#   key100: value100
+# Output:
+#   key1  : value1
+#   key100: value100
+
+separator=${1:-":"}
+# Keep track of the longest key
+max_key_length=0
+# Store the lines (arrays don't exist in POSIX shell)
+lines=""
+
+while IFS= read -r line; do
+    lines="$lines\n$line"
+    # If the line does not contain the separator, skip it
+    if ! echo "$line" | grep -q "$separator"; then
+        continue
+    fi
+    key=$(echo "$line" | cut -d "$separator" -f1)
+    if [ ${#key} -gt "$max_key_length" ]; then
+        max_key_length=${#key}
+    fi
+done
+
+# Print the lines with the correct padding
+echo "$lines" | tail -n +2 | while IFS= read -r line; do
+    # If the line does not contain the separator, print it as is
+    if ! echo "$line" | grep -q "$separator"; then
+        echo "$line"
+        continue
+    fi
+    key=$(echo "$line" | cut -d "$separator" -f1)
+    value=$(echo "$line" | cut -d "$separator" -f2- | sed 's/^ *//')
+    printf "%-${max_key_length}s %s %s\n" "$key" "$separator" "$value"
+done
