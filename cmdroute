@@ -1,0 +1,38 @@
+#!/usr/bin/env sh
+
+# Routes a subcommand to the appropriate script and passes all arguments to it
+# Scripts must be in the form of `<prefix><separator><subcommand>`
+# For example, wait-for could have subcommands wait-for-file and wait-for-port
+# $1 - The prefix of the command or use '-' to use the name of the current file
+
+# Pro tip: Copy-paste this function into your script and use it to route subcommands
+cmdroute() {
+    # Get the prefix
+    if [ "$1" = "-" ]; then
+        __cmdrouter_prefix=$(basename "$0" | sed -e 's/\..*$//')
+        shift
+    else
+        __cmdrouter_prefix="$1"
+        shift
+    fi
+    # Get the subcommand
+    __cmdrouter_subcommand="$1"
+    shift
+
+    # Find the script and run it
+    # Look for `<prefix>-<subcommand>`, `<prefix>_<subcommand>`, and `<prefix>.<subcommand>`, 
+    # in that order, and run the first one found
+    for __cmdrouter_separator in '-' '_' '.'; do
+        __cmdrouter_script="${__cmdrouter_prefix}${__cmdrouter_separator}${__cmdrouter_subcommand}"
+        if command -v "$__cmdrouter_script" >/dev/null 2>&1; then
+            "$__cmdrouter_script" "$@"
+            return $?
+        fi
+    done
+    
+    echo "$__cmdrouter_prefix: Unknown subcommand: $__cmdrouter_subcommand" >&2
+
+    return 4
+}
+
+cmdroute "$@"

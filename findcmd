@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+# List all commands in the PATH that match the given grep query
+# Example: Find all command starting with "git":
+#   findcmd ^git
+
+# FIXME: some shells (fish) apparently will show the an error message on missing dirs from ls even though stderr is redirected
+echo "$PATH" | tr ':' '\0' | xargs -0 ls 2> /dev/null | grep "$@" | sort | uniq
