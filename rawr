@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+# Random Arg WRangler
+
+# Pick a random line from a file and pass it to the provided command as arguments
+# Tip: combine with repeat command to run multiple times
+
+file=$1
+shift
+
+# Count the number of lines in the file
+lines=$(wc -l < "$file" | sed 's/[^0-9]*//g')
+# Pick a random line
+line=$((RANDOM % lines + 1))
+# Get the line
+args=$(head -n $line "$file" | tail -n 1)
+
+# shellcheck disable=SC2086
+"$@" $args

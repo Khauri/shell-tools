@@ -87,6 +87,23 @@ findcmd find
 findcmd grep$
 ```
 
+### rawr
+
+Random Argument WRangler
+
+Picks a random line from a file and provides it as arguments to the given command.
+
+`args.txt`
+```txt
+world
+everyone
+```
+
+```sh
+rawr args.txt echo hello
+# prints either "hello world" or "hello everyone"
+```
+
 ### trim, trim.end, trim.start
 
 Trim white space from a string on both ends, the tail end, or the start end respectively
